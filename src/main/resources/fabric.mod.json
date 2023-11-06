@@ -15,9 +15,6 @@
     ],
     "main": [
       "xyz.funky493.little_big_hordes_of_mine.LittleBigHordesOfMine"
-    ],
-    "modmenu": [
-      "xyz.funky493.little_big_hordes_of_mine.LittleBigHordesOfMineModMenuIntegration"
     ]
   },
   "depends": {
