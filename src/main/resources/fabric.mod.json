@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "little_big_hordes_of_mine",
+  "version": "${version}",
+  "name": "little big hordes of mine",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/little_big_hordes_of_mine/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "xyz.funky493.little_big_hordes_of_mine.client.LittleBigHordesOfMineClient"
+    ],
+    "main": [
+      "xyz.funky493.little_big_hordes_of_mine.LittleBigHordesOfMine"
+    ],
+    "modmenu": [
+      "xyz.funky493.little_big_hordes_of_mine.LittleBigHordesOfMineModMenuIntegration"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
