@@ -5,9 +5,7 @@ import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import net.minecraft.nbt.NbtCompound;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Config(name = "little_big_hordes_of_mine")
