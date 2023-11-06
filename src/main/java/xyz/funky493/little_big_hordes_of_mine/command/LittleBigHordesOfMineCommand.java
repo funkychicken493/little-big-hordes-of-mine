@@ -9,6 +9,8 @@ import net.minecraft.util.math.BlockPos;
 import xyz.funky493.little_big_hordes_of_mine.horde.Summoner;
 import xyz.funky493.little_big_hordes_of_mine.horde.Wave;
 
+import java.util.Objects;
+
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 import static xyz.funky493.little_big_hordes_of_mine.LittleBigHordesOfMine.LOGGER;
@@ -24,7 +26,12 @@ public class LittleBigHordesOfMineCommand {
                     BlockPos pos = BlockPosArgumentType.getBlockPos(context, "pos");
                     String waveString = StringArgumentType.getString(context, "wave");
                     try {
-                        Summoner.summonHorde(Wave.loadWaveFromString(waveString, false), context.getSource().getWorld(), pos);
+                        if(waveString == null) {
+                            LOGGER.error("Wave string is null!");
+                            context.getSource().sendFeedback(Text.literal("Wave string is null!"), true);
+                            return -1;
+                        }
+                        Summoner.summonHorde(Objects.requireNonNull(Wave.loadWaveFromConfig(waveString)), context.getSource().getWorld(), pos);
                     } catch (Exception e) {
                         String error = "Error summoning wave " + waveString + " at " + pos.toString() + ": " + e;
                         LOGGER.error(error);
