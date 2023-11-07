@@ -45,11 +45,21 @@ public class LittleBigHordesOfMine implements ModInitializer {
 
             @Override
             public void reload(ResourceManager manager) {
-                LOGGER.info("Loading resource jsons");
+                LOGGER.info("Loading resource jsons...");
                 for(Map.Entry<Identifier, Resource> id : manager.findResources("lbhom", path -> path.toString().endsWith(".json")).entrySet()) {
                     try(InputStream stream = manager.getResource(id.getKey()).orElseThrow().getInputStream()) {
                         LOGGER.info("Loading resource json " + id.getKey() + " of type " + getFolderType(id.getKey()));
-
+                        switch(getFolderType(id.getKey())) {
+                            case "horde":
+                                loadedData.loadHorde(stream);
+                                break;
+                            case "wave":
+                                loadedData.loadWave(stream, id.getKey());
+                                break;
+                            default:
+                                LOGGER.warn("Unknown resource json type " + getFolderType(id.getKey()) + " for " + id.getKey());
+                                break;
+                        }
                     } catch(Exception e) {
                         LOGGER.error("Error occurred while loading resource json" + id.toString(), e);
                     }
