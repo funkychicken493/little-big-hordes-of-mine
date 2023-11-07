@@ -6,9 +6,11 @@ import net.minecraft.command.argument.BlockPosArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
+import xyz.funky493.little_big_hordes_of_mine.LittleBigHordesOfMine;
 import xyz.funky493.little_big_hordes_of_mine.horde.Summoner;
 import xyz.funky493.little_big_hordes_of_mine.horde.Wave;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import static net.minecraft.server.command.CommandManager.argument;
@@ -33,16 +35,47 @@ public class LittleBigHordesOfMineCommand {
                         }
                         Summoner.summonHorde(Objects.requireNonNull(Wave.loadWaveFromConfig(waveString)), context.getSource().getWorld(), pos);
                     } catch (Exception e) {
-                        String error = "Error summoning wave " + waveString + " at " + pos.toString() + ": " + e;
+                        String error = "Error summoning wave " + waveString + " at " + pos.toString() + ": " + e.getMessage() + " " + Arrays.toString(e.getStackTrace());
                         LOGGER.error(error);
                         context.getSource().sendFeedback(Text.literal(error), true);
                         return -1;
                     }
-                    // /lbhom testWave ~ ~ ~ "participants[1-10x minecraft:zombie, 1-5x minecraft:zombie_villager]"
                     context.getSource().sendFeedback(Text.literal("Summoned wave " + waveString + " at " + pos.toString()), true);
                     LOGGER.debug("Summoned wave " + waveString + " at " + pos + "(presumably successfully??)");
                     return 1;
                 })))));
+        dispatcher.register(literal("lbhom")
+                .requires(source -> source.hasPermissionLevel(2))
+                .then(literal("dumpWaves")
+                .executes(context -> {
+                    context.getSource().sendFeedback(Text.literal("Dumping waves to log..."), false);
+
+                    try {
+                        for(String waveId : LittleBigHordesOfMine.config.waves.keySet()) {
+                            Wave wave = Wave.loadWaveFromConfig(waveId);
+                            if(wave == null) {
+                                LOGGER.error("Wave " + waveId + " is null!");
+                                continue;
+                            }
+                            LOGGER.info("Wave " + waveId + ":");
+                            for(String participant : wave.participants.keySet()) {
+                                LOGGER.info("    " + participant + ": " + wave.participants.get(participant).toString());
+                            }
+                        }
+                    } catch (Exception e) {
+                        LOGGER.error("Error dumping waves: " + e);
+                        context.getSource().sendFeedback(Text.literal("Error dumping waves: " + e), true);
+                        return -1;
+                    }
+                    return 1;
+                })));
+        dispatcher.register(literal("lbhom")
+                .requires(source -> source.hasPermissionLevel(2))
+                .then(literal("reloadConfig")
+                .executes(context -> {
+                    LittleBigHordesOfMine.reloadConfig();
+                    return 1;
+                })));
     }
 
 }

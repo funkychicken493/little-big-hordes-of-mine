@@ -3,6 +3,7 @@ package xyz.funky493.little_big_hordes_of_mine;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
+import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import org.slf4j.Logger;
@@ -18,9 +19,14 @@ public class LittleBigHordesOfMine implements ModInitializer {
      */
     @Override
     public void onInitialize() {
-        AutoConfig.register(LittleBigHordesOfMineConfig.class, JanksonConfigSerializer::new);
+        AutoConfig.register(LittleBigHordesOfMineConfig.class, GsonConfigSerializer::new);
         config = AutoConfig.getConfigHolder(LittleBigHordesOfMineConfig.class).getConfig();
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> LittleBigHordesOfMineCommand.register(dispatcher));
 
+    }
+
+    public static void reloadConfig() {
+        AutoConfig.getConfigHolder(LittleBigHordesOfMineConfig.class).load();
+        config = AutoConfig.getConfigHolder(LittleBigHordesOfMineConfig.class).getConfig();
     }
 }
