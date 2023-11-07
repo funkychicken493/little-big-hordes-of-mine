@@ -28,5 +28,8 @@ public class Wave {
     public ArrayList<Participant> getParticipantsTable() {
         return participantsTable;
     }
+    Wave() {
+
+    }
 }
 

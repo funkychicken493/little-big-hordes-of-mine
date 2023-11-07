@@ -1,8 +1,5 @@
 {
   "min_days": 1,
   "max_days": 3,
-  "selection_amount": 1,
-  "participants_table": [
-
-  ]
+  "selection_amount": 1
 }

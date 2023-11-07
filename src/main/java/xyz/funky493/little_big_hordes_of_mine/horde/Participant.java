@@ -7,9 +7,12 @@ import net.minecraft.nbt.NbtCompound;
 public class Participant {
     private float weight;
     private int amount;
-    private EntityType<?> type;
-    private NbtCompound nbt;
+    //private EntityType<?> type;
+    //private NbtCompound nbt;
     private int minDays;
     private int maxDays;
+    Participant() {
+
+    }
 
 }
