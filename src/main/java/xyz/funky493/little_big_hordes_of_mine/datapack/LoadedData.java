@@ -31,6 +31,7 @@ public class LoadedData {
         }
         waves.add(wave);
         LOGGER.info("Loaded wave " + wave.getId() + " with "  + " participants from " + location);
+        LOGGER.info(String.valueOf(wave.maxDays));
         try {
             stream.close();
         } catch (IOException e) {

@@ -11,10 +11,15 @@ import java.util.ArrayList;
  */
 public class Wave {
     public Identifier id;
+    @SerializedName("participants")
     public ArrayList<Participant> participantsTable;
+    @SerializedName("weight")
     public float weight;
+    @SerializedName("selection_amount")
     public int selectionAmount;
+    @SerializedName("min_days")
     public int minDays;
+    @SerializedName("max_days")
     public int maxDays;
 
     public void setId(Identifier id) {
