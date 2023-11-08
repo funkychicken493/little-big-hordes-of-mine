@@ -54,27 +54,17 @@ public class LittleBigHordesOfMine implements ModInitializer {
                 LOGGER.info("Loading resource jsons...");
                 for(Map.Entry<Identifier, Resource> id : manager.findResources("lbhom", path -> path.toString().endsWith(".json")).entrySet()) {
                     try(InputStream stream = manager.getResource(id.getKey()).orElseThrow().getInputStream()) {
-                        LOGGER.info("Loading resource json " + id.getKey() + " of type " + getFolderType(id.getKey()));
-                        String json = new String(stream.readAllBytes(), Charset.defaultCharset());
-                        if(!ResourceConditions.objectMatchesConditions(JsonParser.parseString(json).getAsJsonObject())){
-                            LOGGER.info("Conditions not met for " + id.getKey() + ", so it will not be loaded.");
-                            continue;
-                        }
-
-                        switch(getFolderType(id.getKey())) {
-                            case "horde":
-                                loadedData.loadHorde(stream);
-                                break;
+                        JsonElement json = JsonParser.parseString(new String(stream.readAllBytes(), StandardCharsets.UTF_8));
+                        String type = getFolderType(id.getKey());
+                        LOGGER.info("Loading resource json " + id.getKey() + " of type " + type);
+                        switch(type) {
                             case "wave":
                                 loadedData.loadWave(json, id.getKey());
                                 break;
-                            case "participant":
-                                loadedData.loadParticipant(stream, id.getKey());
-                                break;
                             default:
-                                LOGGER.warn("Unknown resource json type " + getFolderType(id.getKey()) + " for " + id.getKey());
-                                break;
+                                LOGGER.warn("Unknown resource json type " + type + " for " + id.getKey());
                         }
+
                     } catch(Exception e) {
                         LOGGER.error("Error occurred while loading resource json " + id.toString(), e);
                     }

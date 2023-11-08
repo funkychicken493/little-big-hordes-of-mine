@@ -1,6 +1,5 @@
 {
-  "min_days": 1,
-  "max_days": 3,
+  "weight": 1,
   "selection_amount": 1,
   "fabric:load_conditions": [
     {
