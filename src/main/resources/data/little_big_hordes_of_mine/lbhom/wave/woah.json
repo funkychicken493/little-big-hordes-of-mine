@@ -1,6 +1,10 @@
 {
   "selection_amount": 1,
   "participants": {
-    "little_big_hordes_of_mine:test": 1
+    "little_big_hordes_of_mine:test": 1,
+    "fuck": {
+      "type": "minecraft:zombie",
+      "amount": 3
+    }
   }
 }

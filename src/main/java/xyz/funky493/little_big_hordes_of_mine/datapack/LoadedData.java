@@ -12,23 +12,21 @@ import xyz.funky493.little_big_hordes_of_mine.horde.Wave;
 import static xyz.funky493.little_big_hordes_of_mine.LittleBigHordesOfMine.LOGGER;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 // Contains all data loaded from any datapacks
 public class LoadedData {
-    public ArrayList<Wave> waves;
-    public ArrayList<Horde> hordes;
-    public ArrayList<Participant> participants;
+    public Map<String, Wave> waves;
     public LoadedData() {
-        waves = new ArrayList<>();
-        hordes = new ArrayList<>();
-        participants = new ArrayList<>();
+        waves = new HashMap<>();
     }
 
     public void loadWave(JsonElement json, Identifier id) {
         DataResult<Wave> result = Wave.CODEC.parse(JsonOps.INSTANCE, json);
         Wave wave = result.resultOrPartial(LOGGER::error).orElseThrow();
         wave.setId(id);
-        waves.add(wave);
+        waves.put(id.toString(), wave);
         LOGGER.info("Loaded wave " + wave.getId() + " as: " + wave);
     }
 }
