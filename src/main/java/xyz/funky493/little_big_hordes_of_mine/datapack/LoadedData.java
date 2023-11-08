@@ -1,9 +1,6 @@
 package xyz.funky493.little_big_hordes_of_mine.datapack;
 
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import net.minecraft.util.Identifier;
 import xyz.funky493.little_big_hordes_of_mine.horde.Horde;
 import xyz.funky493.little_big_hordes_of_mine.horde.Participant;
@@ -41,6 +38,7 @@ public class LoadedData {
 
     public void loadWave(String json, Identifier location) {
         Wave wave = gson.fromJson(json, Wave.class);
+        wave.setId(location); // forcefully set the id to the path, even if it's already set
         waves.add(wave);
         LOGGER.info("Loaded wave " + wave + " from " + location);
     }

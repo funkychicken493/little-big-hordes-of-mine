@@ -1,9 +1,6 @@
 package xyz.funky493.little_big_hordes_of_mine;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.fabricmc.api.ModInitializer;
@@ -22,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 public class LittleBigHordesOfMine implements ModInitializer {
@@ -57,8 +55,8 @@ public class LittleBigHordesOfMine implements ModInitializer {
                 for(Map.Entry<Identifier, Resource> id : manager.findResources("lbhom", path -> path.toString().endsWith(".json")).entrySet()) {
                     try(InputStream stream = manager.getResource(id.getKey()).orElseThrow().getInputStream()) {
                         LOGGER.info("Loading resource json " + id.getKey() + " of type " + getFolderType(id.getKey()));
-                        LOGGER.info(new String(stream.readAllBytes(), Charset.defaultCharset()));
-                        if(!conditionsMet(stream)){
+                        String json = new String(stream.readAllBytes(), Charset.defaultCharset());
+                        if(!ResourceConditions.objectMatchesConditions(JsonParser.parseString(json).getAsJsonObject())){
                             LOGGER.info("Conditions not met for " + id.getKey() + ", so it will not be loaded.");
                             continue;
                         }
@@ -68,7 +66,7 @@ public class LittleBigHordesOfMine implements ModInitializer {
                                 loadedData.loadHorde(stream);
                                 break;
                             case "wave":
-                                loadedData.loadWave(new String(stream.readAllBytes(), Charset.defaultCharset()), id.getKey());
+                                loadedData.loadWave(json, id.getKey());
                                 break;
                             case "participant":
                                 loadedData.loadParticipant(stream, id.getKey());
@@ -86,11 +84,6 @@ public class LittleBigHordesOfMine implements ModInitializer {
             private String getFolderType(Identifier id) {
                 String[] path = id.getPath().split("/");
                 return path[path.length - 2];
-            }
-
-            private boolean conditionsMet(InputStream stream) {
-                Gson gson = new GsonBuilder().create();
-                return ResourceConditions.objectMatchesConditions(gson.fromJson(new InputStreamReader(stream), JsonObject.class));
             }
         });
     }
