@@ -29,6 +29,6 @@ public class LoadedData {
         Wave wave = result.resultOrPartial(LOGGER::error).orElseThrow();
         wave.setId(id);
         waves.add(wave);
-        LOGGER.info("Loaded wave " + wave.getId() + " as:" + wave);
+        LOGGER.info("Loaded wave " + wave.getId() + " as: " + wave);
     }
 }
