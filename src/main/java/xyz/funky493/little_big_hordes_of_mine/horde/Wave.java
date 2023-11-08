@@ -10,31 +10,46 @@ import java.util.ArrayList;
  * Each participant has a weight, which is the chance of it being chosen, the higher the weight, the higher the chance.
  */
 public class Wave {
-    public Identifier id;
-    @SerializedName("participants")
-    public ArrayList<Participant> participantsTable;
+    //private Identifier id;
+    //@SerializedName("participants")
+    //private ArrayList<Participant> participantsTable;
     @SerializedName("weight")
-    public float weight;
+    private float weight;
     @SerializedName("selection_amount")
-    public int selectionAmount;
+    private int selectionAmount;
     @SerializedName("min_days")
-    public int minDays;
+    private int minDays;
     @SerializedName("max_days")
-    public int maxDays;
+    private int maxDays;
 
-    public void setId(Identifier id) {
-        this.id = id;
-    }
-
-    public Identifier getId() {
-        return id;
-    }
-
-    public ArrayList<Participant> getParticipantsTable() {
-        return participantsTable;
-    }
+//    public void setId(Identifier id) {
+//        this.id = id;
+//    }
+//
+//    public Identifier getId() {
+//        return id;
+//    }
     Wave() {
+        weight = 0;
+        selectionAmount = 0;
+        minDays = 0;
+        maxDays = 0;
+    }
 
+    public float getWeight() {
+        return weight;
+    }
+
+    @Override
+    public String toString() {
+        return "Wave{" +
+//                "id=" + id +
+                ", participantsTable="  +
+                ", weight=" + weight +
+                ", selectionAmount=" + selectionAmount +
+                ", minDays=" + minDays +
+                ", maxDays=" + maxDays +
+                '}';
     }
 }
 

@@ -1,0 +1,13 @@
+{
+  "min_days": 1,
+  "max_days": 3,
+  "selection_amount": 1,
+  "fabric:load_conditions": [
+    {
+        "condition": "fabric:any_mod_loaded",
+        "values": [
+          "fake"
+        ]
+    }
+  ]
+}
