@@ -61,6 +61,9 @@ public class LittleBigHordesOfMine implements ModInitializer {
                             case "wave":
                                 loadedData.loadWave(json, id.getKey());
                                 break;
+                            case "participant":
+                                loadedData.loadParticipant(json, id.getKey());
+                                break;
                             default:
                                 LOGGER.warn("Unknown resource json type " + type + " for " + id.getKey());
                         }

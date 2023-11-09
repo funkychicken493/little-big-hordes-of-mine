@@ -15,31 +15,11 @@ public class Participant {
     private int amount;
     @SerializedName("type")
     private Identifier entityType;
-//    private String nbt;
-//    @SerializedName("min_days")
-//    private int minDays;
-//    @SerializedName("max_days")
-//    private int maxDays;
-    Participant() {
-
-    }
-
-    public EntityType<?> getActualEntityType() {
-        return Registry.ENTITY_TYPE.get(entityType);
-    }
-
-//    public NbtCompound getNbt() {
-//        try {
-//            return StringNbtReader.parse(nbt);
-//        } catch (CommandSyntaxException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+    private NbtCompound nbt;
 
     public Identifier getId() {
         return id;
     }
-
     public void setId(Identifier id) {
         this.id = id;
     }
@@ -49,16 +29,21 @@ public class Participant {
     public Identifier getEntityType() {
         return entityType;
     }
+    public NbtCompound getNbt() {
+        return nbt;
+    }
 
     public static final Codec<Participant> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Identifier.CODEC.fieldOf("type").forGetter(Participant::getEntityType),
-            Codec.INT.fieldOf("amount").forGetter(Participant::getAmount)
+            Codec.INT.fieldOf("amount").forGetter(Participant::getAmount),
+            NbtCompound.CODEC.optionalFieldOf("nbt", new NbtCompound()).forGetter(Participant::getNbt)
     ).apply(instance, Participant::new));
 
-    public Participant(Identifier entityType, int amount) {
+    public Participant(Identifier entityType, int amount, NbtCompound nbt) {
         this.id = null;
         this.entityType = entityType;
         this.amount = amount;
+        this.nbt = nbt;
     }
 
     @Override
@@ -67,6 +52,7 @@ public class Participant {
                 "id=" + id +
                 ", entityType=" + entityType +
                 ", amount=" + amount +
+                ", nbt=" + nbt +
                 '}';
     }
 }

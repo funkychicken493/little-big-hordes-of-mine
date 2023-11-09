@@ -34,9 +34,6 @@ public class Wave {
         return participantsTable;
     }
 
-    Wave() {
-    }
-
     Wave(int selectionAmount, Map<String, Either<Float, Participant>> participantsTable) {
         this.id = null;
         this.selectionAmount = selectionAmount;
