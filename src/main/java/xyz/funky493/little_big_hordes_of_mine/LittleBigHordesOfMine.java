@@ -1,24 +1,21 @@
 package xyz.funky493.little_big_hordes_of_mine;
 
-import com.google.gson.*;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import xyz.funky493.little_big_hordes_of_mine.datapack.LoadedData;
+import xyz.funky493.little_big_hordes_of_mine.command.LittleBigHordesOfMineCommand;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
@@ -35,6 +32,7 @@ public class LittleBigHordesOfMine implements ModInitializer {
         AutoConfig.register(LittleBigHordesOfMineConfig.class, Toml4jConfigSerializer::new);
         config = AutoConfig.getConfigHolder(LittleBigHordesOfMineConfig.class).getConfig();
         registerReloadListener();
+        LittleBigHordesOfMineCommand.register();
     }
 
     public static void reloadConfig() {
@@ -54,15 +52,16 @@ public class LittleBigHordesOfMine implements ModInitializer {
                 LOGGER.info("Loading resource jsons...");
                 for(Map.Entry<Identifier, Resource> id : manager.findResources("lbhom", path -> path.toString().endsWith(".json")).entrySet()) {
                     try(InputStream stream = manager.getResource(id.getKey()).orElseThrow().getInputStream()) {
+                        Identifier location = fixIdentifier(id.getKey());
                         JsonElement json = JsonParser.parseString(new String(stream.readAllBytes(), StandardCharsets.UTF_8));
                         String type = getFolderType(id.getKey());
-                        LOGGER.info("Loading resource json " + id.getKey() + " of type " + type);
+                        LOGGER.info("Loading resource json " + location + " of type " + type);
                         switch(type) {
                             case "wave":
-                                loadedData.loadWave(json, id.getKey());
+                                loadedData.loadWave(json, location);
                                 break;
                             case "participant":
-                                loadedData.loadParticipant(json, id.getKey());
+                                loadedData.loadParticipant(json, location);
                                 break;
                             default:
                                 LOGGER.warn("Unknown resource json type " + type + " for " + id.getKey());
@@ -77,6 +76,10 @@ public class LittleBigHordesOfMine implements ModInitializer {
             private String getFolderType(Identifier id) {
                 String[] path = id.getPath().split("/");
                 return path[path.length - 2];
+            }
+
+            private static Identifier fixIdentifier(Identifier id) {
+                return new Identifier(id.getNamespace(), id.getPath().replace(".json", "").replaceFirst("lbhom/.*/", ""));
             }
         });
     }

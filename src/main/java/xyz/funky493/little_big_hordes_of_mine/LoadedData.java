@@ -1,4 +1,4 @@
-package xyz.funky493.little_big_hordes_of_mine.datapack;
+package xyz.funky493.little_big_hordes_of_mine;
 
 import com.google.gson.JsonElement;
 import com.mojang.serialization.DataResult;
