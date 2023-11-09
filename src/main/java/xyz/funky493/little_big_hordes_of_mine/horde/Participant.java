@@ -12,6 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import xyz.funky493.little_big_hordes_of_mine.LittleBigHordesOfMine;
+import xyz.funky493.little_big_hordes_of_mine.datapack.Condition;
 
 import java.util.ArrayList;
 
@@ -37,6 +38,7 @@ public class Participant {
     public NbtCompound getNbt() {
         return nbt;
     }
+    public ArrayList<Condition> conditions;
 
     public static final Codec<Participant> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Identifier.CODEC.fieldOf("type").forGetter(Participant::getEntityType),

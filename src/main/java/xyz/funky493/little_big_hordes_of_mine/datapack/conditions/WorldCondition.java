@@ -5,8 +5,8 @@ import xyz.funky493.little_big_hordes_of_mine.datapack.Condition;
 
 public abstract class WorldCondition extends Condition {
     @Override
-    public String getConditionType() {
-        return "world";
+    public ConditionType getConditionType() {
+        return ConditionType.WORLD;
     }
     @Override
     public abstract String getConditionId();
