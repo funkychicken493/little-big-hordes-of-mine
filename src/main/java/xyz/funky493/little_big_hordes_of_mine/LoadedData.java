@@ -4,9 +4,11 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.util.Identifier;
+import xyz.funky493.little_big_hordes_of_mine.datapack.Condition;
 import xyz.funky493.little_big_hordes_of_mine.horde.Participant;
 import xyz.funky493.little_big_hordes_of_mine.horde.Wave;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,9 +18,12 @@ import static xyz.funky493.little_big_hordes_of_mine.LittleBigHordesOfMine.LOGGE
 public class LoadedData {
     private final Map<Identifier, Wave> waves;
     private final Map<Identifier, Participant> participants;
+
+    private final ArrayList<Condition> conditions;
     public LoadedData() {
         waves = new HashMap<>();
         participants = new HashMap<>();
+        conditions = new ArrayList<>();
     }
 
     public void loadWave(JsonElement json, Identifier id) {
@@ -35,6 +40,13 @@ public class LoadedData {
         participant.setId(id);
         participants.put(id, participant);
         LOGGER.info("Loaded participant " + id + " as: " + participant);
+    }
+
+    public void registerCondition(Condition condition) {
+        conditions.add(condition);
+    }
+    public ArrayList<Condition> getConditions() {
+        return conditions;
     }
 
     public Map<Identifier, Wave> getWaves() {
