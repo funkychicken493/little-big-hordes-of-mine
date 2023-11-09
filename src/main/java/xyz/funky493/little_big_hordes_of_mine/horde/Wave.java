@@ -1,14 +1,10 @@
 package xyz.funky493.little_big_hordes_of_mine.horde;
 
-import com.google.gson.annotations.SerializedName;
-import com.ibm.icu.text.MessagePattern;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.Identifier;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 /**

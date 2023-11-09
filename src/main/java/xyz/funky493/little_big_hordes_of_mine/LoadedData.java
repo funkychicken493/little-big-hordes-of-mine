@@ -6,10 +6,11 @@ import com.mojang.serialization.JsonOps;
 import net.minecraft.util.Identifier;
 import xyz.funky493.little_big_hordes_of_mine.horde.Participant;
 import xyz.funky493.little_big_hordes_of_mine.horde.Wave;
-import static xyz.funky493.little_big_hordes_of_mine.LittleBigHordesOfMine.LOGGER;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static xyz.funky493.little_big_hordes_of_mine.LittleBigHordesOfMine.LOGGER;
 
 // Contains all data loaded from any datapacks
 public class LoadedData {
