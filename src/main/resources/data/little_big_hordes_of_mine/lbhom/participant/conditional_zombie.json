@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:zombie",
+  "amount": 3,
+  "conditions": {
+    "weather": "thunder"
+  }
+}

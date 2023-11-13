@@ -2,6 +2,7 @@ package xyz.funky493.little_big_hordes_of_mine.horde;
 
 import com.google.gson.annotations.SerializedName;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -13,8 +14,11 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import xyz.funky493.little_big_hordes_of_mine.LittleBigHordesOfMine;
 import xyz.funky493.little_big_hordes_of_mine.datapack.Condition;
+import xyz.funky493.little_big_hordes_of_mine.datapack.conditions.FabricCondition;
+import xyz.funky493.little_big_hordes_of_mine.datapack.conditions.WorldCondition;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class Participant {
     private Identifier id;
@@ -38,22 +42,28 @@ public class Participant {
     public NbtCompound getNbt() {
         return nbt;
     }
-    public ArrayList<Condition> conditions;
-
+    public Map<String, Dynamic<?>> conditions;
     public static final Codec<Participant> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Identifier.CODEC.fieldOf("type").forGetter(Participant::getEntityType),
             Codec.INT.fieldOf("amount").forGetter(Participant::getAmount),
-            NbtCompound.CODEC.optionalFieldOf("nbt", new NbtCompound()).forGetter(Participant::getNbt)
+            NbtCompound.CODEC.optionalFieldOf("nbt", new NbtCompound()).forGetter(Participant::getNbt),
+            Codec.unboundedMap(Codec.STRING, Codec.PASSTHROUGH).optionalFieldOf("conditions", Map.of()).forGetter(Participant::getConditions)
     ).apply(instance, Participant::new));
 
-    public Participant(Identifier entityType, int amount, NbtCompound nbt) {
+    private Map<String, Dynamic<?>> getConditions() {
+        return conditions;
+    }
+
+    public Participant(Identifier entityType, int amount, NbtCompound nbt, Map<String, Dynamic<?>> conditions) {
         this.id = null;
         this.entityType = entityType;
         this.amount = amount;
         this.nbt = nbt;
+        this.conditions = conditions;
     }
 
     public Entity summonOnce(World world, BlockPos pos) {
+        LittleBigHordesOfMine.LOGGER.info(testConditions((ServerWorld) world) + " " + conditions.toString());
         NbtCompound compound = nbt.copy();
         if(!Registry.ENTITY_TYPE.containsId(entityType)) {
             LittleBigHordesOfMine.LOGGER.error("Entity type " + entityType.toString() + " does not exist");
@@ -93,6 +103,34 @@ public class Participant {
                 ", entityType=" + entityType +
                 ", amount=" + amount +
                 ", nbt=" + nbt +
+                ", conditions=" + conditions +
                 '}';
+    }
+
+    public boolean testConditions(ServerWorld world) {
+        for(Map.Entry<String, Dynamic<?>> entry : conditions.entrySet()) {
+            Condition condition = LittleBigHordesOfMine.loadedData.getCondition(entry.getKey());
+            if(condition == null) {
+                LittleBigHordesOfMine.LOGGER.error("Condition " + entry.getKey() + " does not exist");
+                return false;
+            }
+            LittleBigHordesOfMine.LOGGER.info("Testing condition " + entry.getKey() + " with value " + entry.getValue().getValue().toString().replace("\"", ""));
+            switch(condition.getConditionType()) {
+                case WORLD:
+                    if(!((WorldCondition) condition).isConditionMet(world, entry.getValue().getValue().toString().replace("\"", ""))) {
+                        return false;
+                    }
+                    break;
+                case FABRIC:
+                    if(!((FabricCondition) condition).isConditionMet(entry.getValue().asString(""))) {
+                        return false;
+                    }
+                    break;
+                default:
+                    LittleBigHordesOfMine.LOGGER.error("Unknown condition type " + condition.getConditionType());
+                    return false;
+            }
+        }
+        return true;
     }
 }
