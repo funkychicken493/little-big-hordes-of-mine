@@ -122,7 +122,8 @@ public class Participant {
                     }
                     break;
                 case FABRIC:
-                    if(!((FabricCondition) condition).isConditionMet(entry.getValue().asString(""))) {
+                    String value = entry.getValue().getValue().toString();
+                    if(!((FabricCondition) condition).isConditionMet(value)) {
                         return false;
                     }
                     break;

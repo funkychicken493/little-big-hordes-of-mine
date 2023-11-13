@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:zombie",
+  "amount": 3,
+  "conditions": {
+    "fabric": [
+      {
+        "condition": "fabric:all_mods_loaded",
+        "values": [
+          "fake_mod"
+        ]
+      }
+    ]
+  }
+}

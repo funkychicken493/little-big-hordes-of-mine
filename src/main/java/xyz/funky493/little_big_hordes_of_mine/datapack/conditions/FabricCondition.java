@@ -1,9 +1,11 @@
 package xyz.funky493.little_big_hordes_of_mine.datapack.conditions;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
+import xyz.funky493.little_big_hordes_of_mine.LittleBigHordesOfMine;
 import xyz.funky493.little_big_hordes_of_mine.datapack.Condition;
 
 /**
@@ -22,6 +24,12 @@ public class FabricCondition extends Condition {
     }
 
     public boolean isConditionMet(String conditionArgument) {
-        return ResourceConditions.objectMatchesConditions(JsonParser.parseString(conditionArgument).getAsJsonObject());
+        try {
+            JsonArray jsonArray = JsonParser.parseString(conditionArgument).getAsJsonArray();
+            return ResourceConditions.conditionsMatch(jsonArray, true);
+        } catch (Exception e) {
+            LittleBigHordesOfMine.LOGGER.error("Failed to parse Fabric condition: " + conditionArgument + ": " + e);
+            return false;
+        }
     }
 }
