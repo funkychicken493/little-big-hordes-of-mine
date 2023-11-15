@@ -1,14 +1,25 @@
 package xyz.funky493.little_big_hordes_of_mine.util;
 
 import org.jetbrains.annotations.NotNull;
+import xyz.funky493.little_big_hordes_of_mine.LittleBigHordesOfMine;
 
 public class InputUtil {
     public static boolean checkComparatorString(String comparatorString, Float value) {
         // Check if the comparator string is == or !=
-        if(comparatorString.matches("==")) {
-            return value == Float.parseFloat(comparatorString);
-        } else if(comparatorString.matches("!=")) {
-            return value != Float.parseFloat(comparatorString);
+        if(comparatorString.contains("==")) {
+            String[] split = comparatorString.split("==");
+            if(split[0].equals("x")) {
+                return value == Float.parseFloat(split[1]);
+            } else {
+                return Float.parseFloat(split[0]) == value;
+            }
+        } else if(comparatorString.contains("!=")) {
+            String[] split = comparatorString.split("!=");
+            if(split[0].equals("x")) {
+                return value != Float.parseFloat(split[1]);
+            } else {
+                return Float.parseFloat(split[0]) != value;
+            }
         }
 
         // Check if its a single comparator and not a range
@@ -16,9 +27,12 @@ public class InputUtil {
             return simpleComparison(comparatorString, value);
         }
 
+        //TODO: fix ranges
+
         // We know it is a range
         // Split by x
         String[] rangeSplit = comparatorString.split("x");
+        LittleBigHordesOfMine.LOGGER.info(rangeSplit[0] + "\n" + rangeSplit[1]);
         return simpleComparison(rangeSplit[0] + "x", value) && simpleComparison("x" + rangeSplit[1], value);
     }
 
@@ -45,7 +59,7 @@ public class InputUtil {
         String[] values = comparatorString.split(operator);
         float firstValue;
         float secondValue;
-        if(values[0].equals("x")) {
+        if(values[0].contains("x")) {
             firstValue = value;
             secondValue = Float.parseFloat(values[1]);
         } else {
@@ -57,7 +71,7 @@ public class InputUtil {
             case ">=" -> firstValue >= secondValue;
             case "<" -> firstValue < secondValue;
             case "<=" -> firstValue <= secondValue;
-            default -> false;
+            default -> throw new IllegalStateException("Unexpected value: " + operator);
         };
     }
 
