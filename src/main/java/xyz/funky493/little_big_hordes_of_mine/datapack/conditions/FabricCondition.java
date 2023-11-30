@@ -1,8 +1,6 @@
 package xyz.funky493.little_big_hordes_of_mine.datapack.conditions;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 import xyz.funky493.little_big_hordes_of_mine.LittleBigHordesOfMine;

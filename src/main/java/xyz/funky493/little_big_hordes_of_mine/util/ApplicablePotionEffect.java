@@ -2,7 +2,6 @@ package xyz.funky493.little_big_hordes_of_mine.util;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;

@@ -4,8 +4,6 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import xyz.funky493.little_big_hordes_of_mine.datapack.Condition;
 import xyz.funky493.little_big_hordes_of_mine.datapack.conditions.FabricCondition;
 import xyz.funky493.little_big_hordes_of_mine.datapack.conditions.TimeCondition;

@@ -14,7 +14,6 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.funky493.little_big_hordes_of_mine.command.LittleBigHordesOfMineCommand;
-import xyz.funky493.little_big_hordes_of_mine.util.InputUtil;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;

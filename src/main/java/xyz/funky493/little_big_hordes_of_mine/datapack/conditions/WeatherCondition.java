@@ -1,8 +1,6 @@
 package xyz.funky493.little_big_hordes_of_mine.datapack.conditions;
 
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.World;
-import xyz.funky493.little_big_hordes_of_mine.datapack.Condition;
 
 public class WeatherCondition extends WorldCondition {
     @Override
