@@ -6,6 +6,7 @@ import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -16,16 +17,19 @@ import xyz.funky493.little_big_hordes_of_mine.LittleBigHordesOfMine;
 import xyz.funky493.little_big_hordes_of_mine.datapack.Condition;
 import xyz.funky493.little_big_hordes_of_mine.datapack.conditions.FabricCondition;
 import xyz.funky493.little_big_hordes_of_mine.datapack.conditions.WorldCondition;
+import xyz.funky493.little_big_hordes_of_mine.util.ApplicablePotionEffect;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class Participant {
     private Identifier id;
     private int amount;
-    @SerializedName("type")
     private Identifier entityType;
     private NbtCompound nbt;
+    private List<ApplicablePotionEffect> effects;
+    private Map<String, Dynamic<?>> conditions;
 
     public Identifier getId() {
         return id;
@@ -42,24 +46,28 @@ public class Participant {
     public NbtCompound getNbt() {
         return nbt;
     }
-    public Map<String, Dynamic<?>> conditions;
+    public List<ApplicablePotionEffect> getEffects() {
+        return effects;
+    }
     public static final Codec<Participant> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Identifier.CODEC.fieldOf("type").forGetter(Participant::getEntityType),
             Codec.INT.fieldOf("amount").forGetter(Participant::getAmount),
             NbtCompound.CODEC.optionalFieldOf("nbt", new NbtCompound()).forGetter(Participant::getNbt),
-            Codec.unboundedMap(Codec.STRING, Codec.PASSTHROUGH).optionalFieldOf("conditions", Map.of()).forGetter(Participant::getConditions)
+            Codec.unboundedMap(Codec.STRING, Codec.PASSTHROUGH).optionalFieldOf("conditions", Map.of()).forGetter(Participant::getConditions),
+            ApplicablePotionEffect.CODEC.listOf().optionalFieldOf("effects", List.of()).forGetter(Participant::getEffects)
     ).apply(instance, Participant::new));
 
     private Map<String, Dynamic<?>> getConditions() {
         return conditions;
     }
 
-    public Participant(Identifier entityType, int amount, NbtCompound nbt, Map<String, Dynamic<?>> conditions) {
+    public Participant(Identifier entityType, int amount, NbtCompound nbt, Map<String, Dynamic<?>> conditions, List<ApplicablePotionEffect> effects) {
         this.id = null;
         this.entityType = entityType;
         this.amount = amount;
         this.nbt = nbt;
         this.conditions = conditions;
+        this.effects = effects;
     }
 
     public Entity summonOnce(World world, BlockPos pos) {
@@ -80,6 +88,9 @@ public class Participant {
             return null;
         }
         serverWorld.spawnEntityAndPassengers(entity);
+        for(ApplicablePotionEffect effect : effects) {
+            ApplicablePotionEffect.apply((LivingEntity) entity, effect);
+        }
         return entity;
     }
 
@@ -104,6 +115,7 @@ public class Participant {
                 ", amount=" + amount +
                 ", nbt=" + nbt +
                 ", conditions=" + conditions +
+                ", effects=" + effects +
                 '}';
     }
 

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:sheep",
+  "amount": 1,
+  "effects": [
+    {
+      "type": "minecraft:fire_resistance",
+      "permanent": true
+    },
+    {
+      "type": "minecraft:glowing",
+      "permanent": true
+    }
+  ]
+}
