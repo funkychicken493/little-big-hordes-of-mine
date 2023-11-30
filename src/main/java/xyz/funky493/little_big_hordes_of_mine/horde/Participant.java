@@ -1,6 +1,5 @@
 package xyz.funky493.little_big_hordes_of_mine.horde;
 
-import com.google.gson.annotations.SerializedName;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -89,7 +88,7 @@ public class Participant {
         }
         serverWorld.spawnEntityAndPassengers(entity);
         for(ApplicablePotionEffect effect : effects) {
-            ApplicablePotionEffect.apply((LivingEntity) entity, effect);
+            ((LivingEntity) entity).addStatusEffect(effect.getEffect());
         }
         return entity;
     }
