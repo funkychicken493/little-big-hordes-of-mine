@@ -1,39 +1,38 @@
 package xyz.funky493.little_big_hordes_of_mine.horde;
 
 import com.google.gson.*;
-import com.google.gson.stream.JsonWriter;
-import com.mojang.datafixers.DataFix;
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.*;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
-import net.minecraft.util.crash.CrashException;
-import net.minecraft.util.crash.CrashReport;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static xyz.funky493.little_big_hordes_of_mine.LittleBigHordesOfMine.LOGGER;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Stream;
-
 public class Wave {
-    private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().serializeNulls().setLenient().create();
+    private static Gson GSON = new GsonBuilder().disableHtmlEscaping().serializeNulls().setLenient().create();
     private Identifier id;
-    private final List<Dynamic<?>> pools;
-    public List<Dynamic<?>> getPools() {
-        return pools;
+    private List<Dynamic<?>> rawPools;
+    private ArrayList<Object> parsedPools;
+    public List<Dynamic<?>> getRawPools() {
+        return rawPools;
     }
 
-    private Wave(List<Dynamic<?>> pools) {
-        this.pools = pools;
+    public ArrayList<Object> getParsedPools() {
+        return parsedPools;
+    }
+
+    private Wave(List<Dynamic<?>> rawPools, ArrayList<Object> parsedPools) {
+        this.rawPools = rawPools;
+        this.parsedPools = parsedPools;
     }
 
     public static Wave create(List<Dynamic<?>> pools) {
-        ArrayList<Dynamic<?>> outputPools = new ArrayList<>();
+        ArrayList<Object> outputPools = new ArrayList<>();
         for(Dynamic<?> pool : pools) {
             List<Map<String, Dynamic<?>>> participants = pool.get("participants").asList((dynamic) -> dynamic.asMap((dynamic1 -> dynamic1.asString().getOrThrow(false, LOGGER::error)), dynamic1 -> dynamic1));
             ArrayList<Participant> parsedParticipants = new ArrayList<>();
@@ -45,16 +44,20 @@ public class Wave {
                     case "lbhom:empty":
                         break;
                     case "lbhom:entity":
-                        JsonObject participantObject = GSON.toJsonTree(participant).getAsJsonObject();
-                        // We need to fix the thing,
+                        Map<String, Object> fixedParticipant = new HashMap<>();
+                        for(Map.Entry<String, Dynamic<?>> entry : participant.entrySet()) {
+                            fixedParticipant.put(entry.getKey(), entry.getValue().getValue());
+                        }
+                        LOGGER.info(fixedParticipant.toString());
                 }
             }
+            outputPools.add(pool);
         }
-        return new Wave(outputPools);
+        return new Wave(pools, outputPools);
     }
 
     public static final Codec<Wave> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.PASSTHROUGH.listOf().fieldOf("pools").forGetter(Wave::getPools)
+            Codec.PASSTHROUGH.listOf().fieldOf("pools").forGetter(Wave::getRawPools)
     ).apply(instance, Wave::create));
 
     public void setId(Identifier id) {
@@ -65,7 +68,7 @@ public class Wave {
     public String toString() {
         return "Wave{" +
                 "id=" + id +
-                ", pools=" + pools +
+                ", pools=" + rawPools +
                 '}';
     }
 }
