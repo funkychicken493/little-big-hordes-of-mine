@@ -1,11 +1,13 @@
 package xyz.funky493.little_big_hordes_of_mine.horde;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
+import com.google.gson.stream.JsonWriter;
+import com.mojang.datafixers.DataFix;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.JsonHelper;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 
@@ -19,6 +21,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class Wave {
+    private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().serializeNulls().setLenient().create();
     private Identifier id;
     private final List<Dynamic<?>> pools;
     public List<Dynamic<?>> getPools() {
@@ -42,13 +45,12 @@ public class Wave {
                     case "lbhom:empty":
                         break;
                     case "lbhom:entity":
-                        // Utilize the Participant.CODEC to parse the participant
-                        DataResult<Participant> result = Participant.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(new Gson().toJson(participant)));
+                        JsonObject participantObject = GSON.toJsonTree(participant).getAsJsonObject();
+                        // We need to fix the thing,
                 }
             }
         }
-
-        return new Wave(pools);
+        return new Wave(outputPools);
     }
 
     public static final Codec<Wave> CODEC = RecordCodecBuilder.create(instance -> instance.group(
