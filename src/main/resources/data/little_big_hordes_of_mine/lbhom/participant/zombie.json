@@ -1,4 +1,7 @@
 {
   "type": "minecraft:zombie",
-  "amount": 3
+  "amount": 3,
+  "nbt": {
+    "NoAI": 1
+  }
 }

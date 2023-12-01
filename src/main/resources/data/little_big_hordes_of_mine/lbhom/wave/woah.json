@@ -1,10 +1,67 @@
 {
-  "selection_amount": 1,
-  "participants": {
-    "little_big_hordes_of_mine:test": 1,
-    "fuck": {
-      "type": "minecraft:zombie",
-      "amount": 3
+  "pools": [
+    {
+      "participants": [
+        {
+          "type": "lbhom:entity",
+          "name": "minecraft:zombie",
+          "amount": 3,
+          "nbt": {
+            "NoAI": 1
+          },
+          "weight": 1
+        },
+        {
+          "type": "lbhom:reference",
+          "name": "lbhom:fireproof_sheep",
+          "weight": 1
+        },
+        {
+          "type": "lbhom:group",
+          "children": [
+            {
+              "type": "lbhom:reference",
+              "name": "lbhom:fireproof_sheep",
+              "nbt": {
+                "CustomName": "jeb"
+              },
+              "weight": 1
+            },
+            {
+              "type": "lbhom:reference",
+              "name": "lbhom:fireproof_sheep",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "type": "lbhom:sequence",
+          "children": [
+            {
+              "type": "lbhom:reference",
+              "name": "lbhom:fireproof_sheep",
+              "weight": 1,
+              "functions": [
+                {
+                  "function": "lbhom:set_amount",
+                  "count": {
+                    "min": 1,
+                    "max": 2
+                  }
+                }
+              ]
+            },
+            {
+              "type": "lbhom:reference",
+              "name": "lbhom:fireproof_sheep",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "type": "lbhom:empty"
+        }
+      ]
     }
-  }
+  ]
 }

@@ -1,53 +1,41 @@
 package xyz.funky493.little_big_hordes_of_mine.horde;
 
-import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.Codec;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.crash.CrashException;
+import net.minecraft.util.crash.CrashReport;
 
+import static xyz.funky493.little_big_hordes_of_mine.LittleBigHordesOfMine.LOGGER;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
-/**
- * A wave is a table of participants that will be chosen at random.
- * Each participant has a weight, which is the chance of it being chosen, the higher the weight, the higher the chance.
- */
 public class Wave {
-    private Identifier id;
-    private Map<String, Either<Float, Participant>> participantsTable;
-    private int selectionAmount;
-
-    public void setId(Identifier id) {
-        this.id = id;
+    private final List<Dynamic<?>> pools;
+    public List<Dynamic<?>> getPools() {
+        return pools;
     }
 
-    public Identifier getId() {
-        return id;
-    }
-    public int getSelectionAmount() {
-        return selectionAmount;
-    }
-    public Map<String, Either<Float, Participant>> getParticipantsTable() {
-        return participantsTable;
+    private Wave(List<Dynamic<?>> pools) {
+        this.pools = pools;
     }
 
-    Wave(int selectionAmount, Map<String, Either<Float, Participant>> participantsTable) {
-        this.id = null;
-        this.selectionAmount = selectionAmount;
-        this.participantsTable = participantsTable;
-    }
+    public static Wave create(List<Dynamic<?>> pools) {
+        ArrayList<Dynamic<?>> outputPools = new ArrayList<>();
+        for(Dynamic<?> pool : pools) {
+            List<Map<String, Dynamic<?>>> participants = pool.get("participants").asList((dynamic) -> dynamic.asMap((dynamic1 -> dynamic1.asString().getOrThrow(false, LOGGER::error)), dynamic1 -> dynamic1));
+        }
 
-    @Override
-    public String toString() {
-        return "Wave{" +
-                "id=" + id +
-                ", selectionAmount=" + selectionAmount +
-                ", participantsTable=" + participantsTable +
-                '}';
+        return new Wave(pools);
     }
 
     public static final Codec<Wave> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.INT.fieldOf("selection_amount").forGetter(Wave::getSelectionAmount),
-            Codec.unboundedMap(Codec.STRING, Codec.either(Codec.FLOAT, Participant.CODEC)).fieldOf("participants").forGetter(Wave::getParticipantsTable)
-    ).apply(instance, Wave::new));
+            Codec.PASSTHROUGH.listOf().fieldOf("pools").forGetter(Wave::getPools)
+    ).apply(instance, Wave::create));
 }
 
