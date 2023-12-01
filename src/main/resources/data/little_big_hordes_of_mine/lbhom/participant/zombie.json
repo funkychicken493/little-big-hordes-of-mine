@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:zombie",
+  "entity_type": "minecraft:zombie",
   "amount": 3,
   "nbt": {
     "NoAI": 1

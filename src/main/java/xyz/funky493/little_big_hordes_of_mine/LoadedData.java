@@ -35,7 +35,7 @@ public class LoadedData {
         Wave wave = result.resultOrPartial(LOGGER::error).orElseThrow();
         wave.setId(id);
         waves.put(id, wave);
-        LOGGER.info("Loaded wave " + wave.getId() + " as: " + wave);
+        LOGGER.info("Loaded wave " + id + " as: " + wave);
     }
 
     public void loadParticipant(JsonElement json, Identifier id) {

@@ -1,0 +1,19 @@
+{
+  "pools": [
+    {
+      "participants":[
+        {
+          "type": "lbhom:empty"
+        },
+        {
+          "type": "lbhom:entity",
+          "entity_type": "minecraft:zombie",
+          "amount": 3,
+          "nbt": {
+            "NoAI": 1
+          }
+        }
+      ]
+    }
+  ]
+}

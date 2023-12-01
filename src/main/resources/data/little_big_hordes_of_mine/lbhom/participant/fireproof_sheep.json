@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:sheep",
+  "entity_type": "minecraft:sheep",
   "amount": 1,
   "effects": [
     {

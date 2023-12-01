@@ -2,6 +2,8 @@ package xyz.funky493.little_big_hordes_of_mine.horde;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Dynamic;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -49,7 +51,7 @@ public class Participant {
         return effects;
     }
     public static final Codec<Participant> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Identifier.CODEC.fieldOf("type").forGetter(Participant::getEntityType),
+            Identifier.CODEC.fieldOf("entity_type").forGetter(Participant::getEntityType),
             Codec.INT.fieldOf("amount").forGetter(Participant::getAmount),
             NbtCompound.CODEC.optionalFieldOf("nbt", new NbtCompound()).forGetter(Participant::getNbt),
             Codec.unboundedMap(Codec.STRING, Codec.PASSTHROUGH).optionalFieldOf("conditions", Map.of()).forGetter(Participant::getConditions),
