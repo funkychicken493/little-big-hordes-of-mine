@@ -10,6 +10,7 @@ import xyz.funky493.little_big_hordes_of_mine.datapack.conditions.TimeCondition;
 import xyz.funky493.little_big_hordes_of_mine.datapack.conditions.WeatherCondition;
 import xyz.funky493.little_big_hordes_of_mine.horde.Participant;
 import xyz.funky493.little_big_hordes_of_mine.horde.Wave;
+import xyz.funky493.little_big_hordes_of_mine.horde.function.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,10 +24,12 @@ public class LoadedData {
     private final Map<Identifier, Participant> participants;
 
     private final ArrayList<Condition> conditions;
+    private final ArrayList<ParticipantFunction> participantFunctions;
     public LoadedData() {
         waves = new HashMap<>();
         participants = new HashMap<>();
         conditions = new ArrayList<>();
+        participantFunctions = new ArrayList<>();
         registerConditions();
     }
 
@@ -53,9 +56,25 @@ public class LoadedData {
         return conditions;
     }
 
+    public void registerParticipantFunction(ParticipantFunction function) {
+        participantFunctions.add(function);
+    }
+    public ArrayList<ParticipantFunction> getParticipantFunctions() {
+        return participantFunctions;
+    }
+
     public boolean isConditionPresent(String id) {
         for(Condition condition : conditions) {
             if(condition.getConditionId().equals(id)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isParticipantFunctionPresent(String id) {
+        for(ParticipantFunction function : participantFunctions) {
+            if(function.getFunctionId().equals(id)) {
                 return true;
             }
         }
@@ -66,6 +85,13 @@ public class LoadedData {
         registerCondition(new FabricCondition());
         registerCondition(new TimeCondition());
         registerCondition(new WeatherCondition());
+    }
+
+    private void registerParticipantFunctions() {
+        registerParticipantFunction(new SetEntityTypeFunction());
+        registerParticipantFunction(new SetAmountFunction());
+        registerParticipantFunction(new SetNbtFunction());
+        registerParticipantFunction(new SetEffectsFunction());
     }
 
     public Map<Identifier, Wave> getWaves() {
@@ -93,6 +119,15 @@ public class LoadedData {
         for(Condition condition : conditions) {
             if(condition.getConditionId().equals(key)) {
                 return condition;
+            }
+        }
+        return null;
+    }
+
+    public ParticipantFunction getParticipantFunction(String key) {
+        for(ParticipantFunction function : participantFunctions) {
+            if(function.getFunctionId().equals(key)) {
+                return function;
             }
         }
         return null;
